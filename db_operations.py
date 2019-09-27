@@ -2,11 +2,14 @@ import pymysql
 from data_config import *
 from classes import *
 
-def db_return_rows(query):
+def db_return_rows(query, parameters=None):
     con = get_sql_connection()
     try:
         with con.cursor() as cursor:
-            cursor.execute(query)
+            if parameters is None:
+                cursor.execute(query)
+            else:
+                cursor.execute(query, parameters)
             return cursor.fetchall()
     except Exception as e:
         print(f"Error occured: {e}")
@@ -80,17 +83,15 @@ def get_drinks_from_db():
 
 def get_rounds_from_db():
     sql = """
-    Select Round_Id, Round_Active, Round_StartTimeUTC, Round_Initiator 
-    From tb_Rounds 
+    Select  Round_Id, Round_Active, Round_StartTimeUTC, Round_Initiator
+    From    tb_Rounds r
     Order By Round_Id
     """
     round_db_rows = db_return_rows(sql)
     round_list = []
 
-    print(round_db_rows)
     for row in round_db_rows:
-        round_list.append(
-            Round(
+        round_list.append(Round(
                 row["Round_Id"], 
                 row["Round_Active"], 
                 row["Round_StartTimeUTC"], 
@@ -101,8 +102,33 @@ def get_rounds_from_db():
     return round_list
 
 
-def get_round_orders():
+def get_round_orders_from_db(round_id):
     sql = """
-    Select 
-
+    Select  Person_Id, Person_First_Name, Person_Last_Name, Drink_Id, Drink_Name, Drink_Instructions
+    From    tb_Round_Orders ro
+    Join    tb_People p on p.Person_Id = ro.ROrder_Person
+    Join    tb_Drinks d on d.Drink_Id = ro.ROrder_Drink
+    Where   ROrder_Round_Id = %s
     """
+    
+    round_orders_db_rows = db_return_rows(sql, (round_id))
+    round_orders_dict = {}
+
+    for row in round_orders_db_rows:
+        person = Person(
+            row["Person_Id"],
+            row["Person_First_Name"],
+            row["Person_Last_Name"]
+        )
+
+        drink = Drink(
+            row["Drink_Id"],
+            row["Drink_Name"],
+            row["Drink_Instructions"]
+        )
+
+        round_orders_dict[person] = drink
+
+    return round_orders_dict
+
+
