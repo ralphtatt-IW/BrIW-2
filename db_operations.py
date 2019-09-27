@@ -56,7 +56,7 @@ def get_people_from_db():
     people_list = []
 
     for row in people_db_rows:
-        fav_drink = Drink(row["Drink_Id"], row["Drink_Name"], row["Drink_Instructions"]) if row["Drink_id"] is not None else None
+        fav_drink = Drink(row["Drink_Id"], row["Drink_Name"], row["Drink_Instructions"]) if row["Drink_Id"] is not None else None
         person = Person(row["Person_Id"], row["Person_First_Name"], row["Person_Last_Name"], fav_drink)
         people_list.append(person)
 
@@ -89,7 +89,14 @@ def get_rounds_from_db():
 
     print(round_db_rows)
     for row in round_db_rows:
-        round_list.append(Round(row["Round_Id"], row["Round_Active"], row["Round_StartTimeUTC"], row[0], row["Round_Initiator"]))
+        round_list.append(
+            Round(
+                row["Round_Id"], 
+                row["Round_Active"], 
+                row["Round_StartTimeUTC"], 
+                row["Round_Initiator"]
+            )
+        )
 
     return round_list
 

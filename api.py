@@ -17,8 +17,9 @@ class MyEncoder(JSONEncoder):
     #    if "__type__" in obj and obj["__type__"] == "Person":
     #        return Person(obj["id"], obj["forename"], obj["surname"])
     #    return obj
+ 
 
-class MyHandler(BaseHTTPRequestHandler):
+class UniversalHandler(BaseHTTPRequestHandler):
     def _set_headers(self):
         self.send_response(200)
         self.send_header("Content-type","text/json")
@@ -27,22 +28,17 @@ class MyHandler(BaseHTTPRequestHandler):
     def get_content_length(self):
         return int(self.headers["Content-Length"])
 
-
-class UniversalHandler(MyHandler):
     def do_GET(self):
         self._set_headers()
         items = {}
         
         if self.path.lower() == "/people":
-            print("people")
             items = get_people_from_db() 
 
         elif self.path.lower() == "/drinks":
-            print("drinks")
             items = get_drinks_from_db()
 
         elif self.path.lower() == "/rounds":
-            print("drinnks")
             items = get_rounds_from_db()
 
         jd = json.dumps(items, cls=MyEncoder)        
@@ -79,11 +75,48 @@ class UniversalHandler(MyHandler):
                 data["start_time_UTC"],
                 data["initiator"]
             )
-            new_round.save_round_state_on_start_and_set_id()
+            new_round.insert_to_db()
 
         self.send_response(201)
         self.end_headers()
 
+
+class WebRender():
+    def do_GET(self):
+        self._set_headers()
+
+        if self.path.lower() == "/people":
+            people = get_people_from_db()
+            
+            table_contents = ""
+            for person in people:
+                table_contents += "<tr>\n"
+                table_contents += f"<td>\n{person.full_name}</td>"
+                table_contents += f"<td>\n{person.fav_drink.name}</td>\n"
+                table_contents += "</tr>\n"
+            
+            html = f"""
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <title>People</title>
+                    <link rel="stylesheet" href="./main.css" /> 
+                </head>
+                <body>
+                    <h1>People</h1>
+                    <table border="1">
+                        <tr>
+                            <th>Name</th>
+                            <th>Preferences</th>
+                        </tr>
+                            {table_contents}
+                    </table>
+                </body>
+            </html>
+            """
+            self.wfile.write(html.encode("utf-8"))
+
+            
 if __name__ == "__main__":
     server_address = ('', 8080)
     httpd = HTTPServer(server_address, UniversalHandler)
