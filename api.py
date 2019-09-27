@@ -74,6 +74,7 @@ class UniversalHandler(MyHandler):
 
         elif self.path.lower() == "/rounds":
             new_round = Round(
+                -1,
                 data["active"],
                 data["start_time_UTC"],
                 data["initiator"]
