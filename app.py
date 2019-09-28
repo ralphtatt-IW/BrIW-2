@@ -22,19 +22,24 @@ app.json_encoder = MyJSONEncoder
 @app.route("/people", methods=["GET", "POST"])
 def handle_people():
     if request.method == "GET":
-        #get_people_from_db = MagicMock(return_value=[{"id": 1, "first_name": "Greg", "last_name": "Ford"}])
+        get_people_from_db = MagicMock(return_value=[{"id": 1, "first_name": "Greg", "last_name": "Ford"}])
         return jsonify(get_people_from_db())
     
 @app.route("/drinks", methods=["GET", "POST"])
 def handle_drinks():
     if request.method == "GET":
-        #get_drinks_from_db = MagicMock(return_value=[{"id": 3, "name": "water", "instructions": None}])
+        get_drinks_from_db = MagicMock(return_value=[{"id": 3, "name": "water", "instructions": None}])
         return jsonify(get_drinks_from_db())
 
-@app.route("/routes", methods=["GET", "POST"])
+@app.route("/rounds", methods=["GET", "POST"])
 def handle_rounds():
     #get rounds
     pass
+
+@app.route("/rounds/orders", methods=["GET", "POST"])
+def handle_round_orders():
+    #get round orders
+    return jsonify({"test": True})
 
 
 if __name__ == "__main__":
