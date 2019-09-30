@@ -64,10 +64,7 @@ def handle_form():
         person_name = request.form.get("person-name")
         drink_name = request.form.get("drink-name")
         
-        if person_name == "" and drink_name == "":
-            return render_template("form.html", title="Add")
-        else:
-           return render_template("posted.html", title="Record Posted", person_name=person_name, drink_name=drink_name)
+        return render_template("posted.html", title="Record Posted", person_name=person_name, drink_name=drink_name)
 
 if __name__ == "__main__":
     app.run(host="localhost", port=8000, debug=True)

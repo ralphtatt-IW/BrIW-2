@@ -2,11 +2,12 @@
 
 
 {% block content %}
-<form id="add-person-form" method="post">
+<form id="add-person-form" method="post" >
   <div class="container">
     <div class="row">
       <div class="col-md-6">
         <div class="card" style="align-self: Center;">
+
           <div class="card-body">
               <legend class="card-title">Add Person</legend>
               <div class="input-group mb-3 input-group-sm">
@@ -24,10 +25,36 @@
               </div>
               <input id="submit-btn" type="submit" value="Submit" class="btn btn-success btn-sm">
           </div>
+
         </div>
       </div>
     </div>
   </div>
-
 </form>
+<script type="text/javascript">
+/*function ValidateInputs() {
+    person_name = document.getElementById("person-name");
+    drink_name = document.getElementById("drink-name");
+    
+    console.log("test");
+
+    if (person_name === "" && drink_name === "") {
+        event.preventDefault();
+    }
+  } */
+
+  document.getElementById("submit-btn").addEventListener("click", function(event){
+    event.preventDefault();
+
+    person_name = document.getElementById("person-name").value;
+    drink_name = document.getElementById("drink-name").value;
+    
+    console.log("test");
+
+    if (person_name !== "" || drink_name !== "") {
+     document.getElementById("add-person-form").submit();   
+    }
+    });
+  //document.getElementById("submit-btn").addEventListener("Click", ValidateInputs(event));
+</script>
 {% endblock %}
