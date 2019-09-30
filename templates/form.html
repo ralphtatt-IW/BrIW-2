@@ -1,0 +1,33 @@
+{% extends "template.html" %}
+
+
+{% block content %}
+<form id="add-person-form" method="post">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card" style="align-self: Center;">
+          <div class="card-body">
+              <legend class="card-title">Add Person</legend>
+              <div class="input-group mb-3 input-group-sm">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Person</span>
+                </div>
+                <input id="person-name" type="text" name="person-name" />
+              </div>
+
+              <div class="input-group mb-3 input-group-sm">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Drink</span>
+                </div>
+                <input id="drink-name" type="text" name="drink-name" />
+              </div>
+              <input id="submit-btn" type="submit" value="Submit" class="btn btn-success btn-sm">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</form>
+{% endblock %}

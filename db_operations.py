@@ -1,6 +1,7 @@
 import pymysql
 from data_config import *
 from classes import *
+from classes import Round
 
 def db_return_rows(query, parameters=None):
     con = get_sql_connection()
@@ -27,6 +28,7 @@ def db_insert_or_update_record(command, parameters):
         print(f"Error occured: {e}")
     finally:
         con.close()
+
 
 def db_insert_and_return_id(command, parameters):
     con = get_sql_connection()
@@ -102,6 +104,30 @@ def get_rounds_from_db():
     return round_list
 
 
+def get_round_from_db_by_id(round_id):
+    sql = """
+    Select  Round_Id, Round_Active, Round_StartTimeUTC, Round_Initiator
+    From    tb_Rounds
+    Where   Round_Id = %s
+    """
+    parameters = (round_id)
+    
+    #should only return one row
+    round_db_row = db_return_rows(sql, parameters)
+    round_to_return = None
+
+    for row in round_db_row:
+        round_to_return = Round(
+            row["Round_Id"], 
+            row["Round_Active"], 
+            row["Round_StartTimeUTC"],
+            row["Round_Initiator"]
+        )
+
+    return round_to_return
+    
+
+
 def get_round_orders_from_db(round_id):
     sql = """
     Select  Person_Id, Person_First_Name, Person_Last_Name, Drink_Id, Drink_Name, Drink_Instructions
@@ -112,7 +138,7 @@ def get_round_orders_from_db(round_id):
     """
     
     round_orders_db_rows = db_return_rows(sql, (round_id))
-    round_orders_dict = {}
+    round_orders = []
 
     for row in round_orders_db_rows:
         person = Person(
@@ -126,9 +152,17 @@ def get_round_orders_from_db(round_id):
             row["Drink_Name"],
             row["Drink_Instructions"]
         )
+        
+        round_orders.append([person, drink])
 
-        round_orders_dict[person] = drink
+    return round_orders
 
-    return round_orders_dict
+def add_order_to_db(round_id, person_id, drink_id):
+        sql_insert_command = """
+        Insert Into tb_Round_Orders (ROrder_Round_Id, ROrder_Person, ROrder_Drink)
+        Values (%s, %s, %s)
+        """
+        parameters = (round_id, person_id, drink_id)
+        db_insert_or_update_record(sql_insert_command, parameters)
 
 

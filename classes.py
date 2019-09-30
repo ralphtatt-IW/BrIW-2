@@ -1,5 +1,4 @@
 import json
-from db_operations import *
 
 class Drink:
     def __init__(self, id, name, instructions=None):
@@ -22,15 +21,7 @@ class Drink:
     def set_instructions(self, instructions):
         self._instructions = instructions
 
-    def insert_to_db(self):
-        insert_command = """
-        Insert Into tb_Drinks (Drink_Name, Drink_Instructions)
-        values (%s, %s)
-        """
-         
-        parameters = (self.name, self.instructions)
-        self._id = db_insert_and_return_id(insert_command, parameters)
-    
+        
 
     id = property(get_id)
     name = property(get_name, set_name)
@@ -104,6 +95,7 @@ class Person:
     full_name = property(get_fullname)
     fav_drink = property(get_fav_drink, set_fav_drink)
 
+
 class Round:
     def __init__(self, id, active, start_time_UTC, initiator):
         self._id = id
@@ -121,9 +113,7 @@ class Round:
         #ends round early
         self._active = False
 
-    def add_order(self, person: Person, drink: Drink):
-        self._orders[person] = drink
-
+    
     def update_order(self, person, drink):
         self._orders[person] = drink
 

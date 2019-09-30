@@ -18,7 +18,6 @@ class MyEncoder(JSONEncoder):
     #        return Person(obj["id"], obj["forename"], obj["surname"])
     #    return obj
  
-
 class UniversalHandler(BaseHTTPRequestHandler):
     def _set_headers(self):
         self.send_response(200)
