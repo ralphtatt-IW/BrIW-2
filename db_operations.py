@@ -44,6 +44,44 @@ def db_insert_and_return_id(command, parameters):
         con.close()
 
 
+def get_person_by_id(person_id):
+    #TODO
+    pass
+
+
+def get_drink_by_id(drink_id):
+    #TODO
+    pass
+
+
+def get_round_by_id(round_id):
+    sql = """
+    Select  Round_Id, Round_Active, Round_StartTimeUTC, Round_Initiator
+    From    tb_Rounds
+    Where   Round_Id = %s
+    """
+    parameters = (round_id)
+    
+    #should only return one row
+    round_db_row = db_return_rows(sql, parameters)
+    round_to_return = None
+
+    for row in round_db_row:
+        round_to_return = Round(
+            row["Round_Id"], 
+            row["Round_Active"], 
+            row["Round_StartTimeUTC"],
+            row["Round_Initiator"]
+        )
+
+    return round_to_return 
+
+
+def get_round_order_by_id(order_id):
+    #TODO
+    pass
+
+
 def get_people():
     sql = """
     Select  Person_Id, 
@@ -104,27 +142,6 @@ def get_rounds():
     return round_list
 
 
-def get_round_by_id(round_id):
-    sql = """
-    Select  Round_Id, Round_Active, Round_StartTimeUTC, Round_Initiator
-    From    tb_Rounds
-    Where   Round_Id = %s
-    """
-    parameters = (round_id)
-    
-    #should only return one row
-    round_db_row = db_return_rows(sql, parameters)
-    round_to_return = None
-
-    for row in round_db_row:
-        round_to_return = Round(
-            row["Round_Id"], 
-            row["Round_Active"], 
-            row["Round_StartTimeUTC"],
-            row["Round_Initiator"]
-        )
-
-    return round_to_return 
 
 
 def get_round_orders(round_id):
@@ -163,27 +180,27 @@ def insert_round_order(round_id, person_id, drink_id):
     Values (%s, %s, %s)
     """
     parameters = (round_id, person_id, drink_id)
-    db_insert_or_update_record(sql_insert_command, parameters)
+    return db_insert_and_return_id(sql_insert_command, parameters)
 
 
 def insert_person(first_name, last_name):
     sql_insert_command = """
     Insert Into tb_People (Person_First_Name, Person_Last_Name)
-    Values (%s, %s)
+    Values (%s, %s);
     """
 
     parameters = (first_name, last_name)
-    db_insert_or_update_record(sql_insert_command, parameters)
+    return db_insert_and_return_id(sql_insert_command, parameters)
 
 
 def insert_person_drinks_pref(person_id, drink_id):
     sql_insert_command = """
     Insert Into tb_Preferences (Pref_Person, Pref_Drink)
-    values (%s, %s)
+    values (%s, %s);
     """
 
     parameters = (person_id, drink_id)
-    db_insert_or_update_record(sql_insert_command, parameters)
+    return db_insert_and_return_id(sql_insert_command, parameters)
 
 
 def insert_drink(name, instructions):
@@ -193,7 +210,7 @@ def insert_drink(name, instructions):
     """
 
     parameters = (name, instructions)
-    db_insert_or_update_record(sql_insert_command, parameters)
+    return db_insert_and_return_id(sql_insert_command, parameters)
 
 
 def insert_round(round_active, round_start_time_utc, round_initiator):
@@ -203,7 +220,7 @@ def insert_round(round_active, round_start_time_utc, round_initiator):
     """
     
     parameters = (round_active, round_start_time_utc, round_initiator)
-    db_insert_or_update_record(sql_save_command, parameters)
+    return db_insert_and_return_id(sql_save_command, parameters)
 
 
 def update_round_order(order_id, person_id, drink_id):

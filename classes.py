@@ -7,7 +7,7 @@ class Drink:
         self._instructions = instructions
 
     def get_id(self):
-        return self._identifier
+        return self._id
 
     def get_name(self):
         return self._name

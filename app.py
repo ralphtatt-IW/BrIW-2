@@ -13,7 +13,24 @@ from unittest.mock import MagicMock
 
 class MyJSONEncoder(JSONEncoder):
     def default(self, o):
-        return o.__dict__
+        if isinstance(o, Person):
+            return {
+               "id": o.id,
+               "first_name": o.first_name,
+               "last_name": o.last_name,
+               "fav_drink": o.fav_drink.__dict__
+            }
+        elif isinstance(o, Drink):
+            return {
+                "id": o.id,
+                "name": o.name,
+                "instructions": o.instructions
+            }
+        elif isinstance(o, Round):
+            #TODO
+            pass
+        else:
+            return o.__dict__
 
 
 app = Flask(__name__, static_url_path="/static")
@@ -24,27 +41,36 @@ app.json_encoder = MyJSONEncoder
 def handle_people():
     if request.method == "GET":
         #get_people_from_db = MagicMock(return_value=[{"id": 1, "first_name": "Greg", "last_name": "Ford"}])
-        return jsonify(get_people_from_db())
+        return jsonify(get_people())
     elif request.method == "POST":
         posted_json = request.get_json()
         first_name = posted_json["first_name"]
         last_name = posted_json["last_name"]
-        fav_drink = posted_json["fav_drink"]["id"]
-        insert_person()
 
+        person_id = insert_person(first_name, last_name)
+        if "fav_drink" in posted_json.keys():
+            insert_person_drinks_pref(person_id, posted_json["fav_drink"]["id"])
+        return '', 201
 
 
 @app.route("/drinks", methods=["GET", "POST"])
 def handle_drinks():
     if request.method == "GET":
         #get_drinks_from_db = MagicMock(return_value=[{"id": 3, "name": "water", "instructions": None}])
-        return jsonify(get_drinks_from_db())
+        return jsonify(get_drinks())
+    elif request.method == "POST":
+        posted_json = request.get_json()
+        name = posted_json["name"]
+        instructions = posted_json["instructions"]
 
+        insert_drink(name, instructions)
+        return '', 201
 
 @app.route("/rounds", methods=["GET", "POST"])
 def handle_rounds():
-    return jsonify(get_rounds_from_db())
+    return jsonify(get_rounds())
     pass
+
 
 @app.route("/rounds/<round_id>")
 def handle_round(round_id):
