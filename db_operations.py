@@ -45,17 +45,51 @@ def db_insert_and_return_id(command, parameters):
 
 
 def get_person_by_id(person_id):
-    #TODO
-    pass
+    sql_query = """
+    Select  Person_Id, Person_First_Name, Person_Last_Name,
+            Drink_Id, Drink_Name, Drink_Instructions
+    From    tb_People p
+    Join    tb_Preferences pr
+        On  Person_Id = Pref_Person
+    Join    tb_Drinks d
+        On  Drink_Id = Pref_Drink
+    Where   Person_Id = %s
+    """
 
+    parameters = (person_id)
+    row = db_return_rows(sql, parameters)[0]
+
+    return Person(
+        row["Person_Id"],
+        row["Person_First_Name"],
+        row["Person_Last_Name"],
+        Drink(
+            row["Drink_Id"],
+            row["Drink_Name"],
+            row["Drink_Instructions"]
+        )
+    )
+    
 
 def get_drink_by_id(drink_id):
-    #TODO
-    pass
+    sql_query = """
+    Select  Drink_Id, Drink_Name, Drink_Instructions
+    From    tb_Drinks
+    Where   Drink_Id = %s
+    """
 
+    parameters = (drink_id)
+    row = db_return_rows(sql_query, parameters)[0]
+
+    return Drink(
+        row["Drink_Id"],
+        row["Drink_Name"],
+        row["Drink_Instructions"]
+    )
+    
 
 def get_round_by_id(round_id):
-    sql = """
+    sql_query = """
     Select  Round_Id, Round_Active, Round_StartTimeUTC, Round_Initiator
     From    tb_Rounds
     Where   Round_Id = %s
@@ -63,7 +97,7 @@ def get_round_by_id(round_id):
     parameters = (round_id)
     
     #should only return one row
-    round_db_row = db_return_rows(sql, parameters)
+    round_db_row = db_return_rows(sql_query, parameters)
     round_to_return = None
 
     for row in round_db_row:
@@ -78,9 +112,33 @@ def get_round_by_id(round_id):
 
 
 def get_round_order_by_id(order_id):
-    #TODO
-    pass
+    sql_query = """
+    Select  ROrder_Id, ROrder_Round_Id,
+            Person_Id, Person_First_Name, Person_Last_Name,
+            Drink_id, Drink_Name, Drink_Instructions
+    From    tb_Round_Orders ro
+    Join    tb_People p On p.Person_Id = ro.ROrder_Person
+    Join    tb_Drinks d On d.Drink_Id = ro.ROrder_Drink
+    Where   ROrder_Round_Id = %s
+    """
+    
+    parameters = (round_id)
+    row = db_return_rows(sql_query, parameters)[0]
 
+    return {
+        "id": row["ROrder_Id"],
+        "round_id": row["ROrder_Round_Id"],
+        "person": Person(
+            row["Person_Id"],
+            row["Person_First_Name"],
+            row["Person_Last_Name"]
+        ),
+        "drink": Drink(
+            row["Drink_Id"],
+            row["Drink_Name"],
+            row["Drink_Instructions"]
+        )
+    }
 
 def get_people():
     sql = """
@@ -142,11 +200,9 @@ def get_rounds():
     return round_list
 
 
-
-
 def get_round_orders(round_id):
     sql = """
-    Select  Person_Id, Person_First_Name, Person_Last_Name, Drink_Id, Drink_Name, Drink_Instructions
+    Select  ROrder_Id, Person_Id, Person_First_Name, Person_Last_Name, Drink_Id, Drink_Name, Drink_Instructions
     From    tb_Round_Orders ro
     Join    tb_People p on p.Person_Id = ro.ROrder_Person
     Join    tb_Drinks d on d.Drink_Id = ro.ROrder_Drink
@@ -169,7 +225,11 @@ def get_round_orders(round_id):
             row["Drink_Instructions"]
         )
         
-        round_orders.append([person, drink])
+        round_orders.append({
+            "id": row["ROrder_Id"],
+            "person": person,
+            "drink": drink}
+        )
 
     return round_orders
 

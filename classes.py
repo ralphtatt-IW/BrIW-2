@@ -70,11 +70,11 @@ class Person:
 
 class Round:
     def __init__(self, id, active, start_time_UTC, initiator):
-        self._id = id
+        self.id = id
         self._orders = {}
         self._active = active
         self._start_time_UTC = start_time_UTC
-        self._initiator = initiator
+        self.initiator = initiator
 
     def start(self):
         self._active = True
@@ -84,8 +84,7 @@ class Round:
     def end(self):
         #ends round early
         self._active = False
-
-    
+ 
     def update_order(self, person, drink):
         self._orders[person] = drink
 

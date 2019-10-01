@@ -6,6 +6,7 @@ from flask import render_template
 from json import JSONEncoder
 from classes import *
 from db_operations import *
+from datetime import datetime
 
 import unittest
 from unittest.mock import MagicMock
@@ -27,8 +28,12 @@ class MyJSONEncoder(JSONEncoder):
                 "instructions": o.instructions
             }
         elif isinstance(o, Round):
-            #TODO
-            pass
+            return {
+                "id": o.id,
+                "active": o.isActive(),
+                "start_time_utc": o.start_time_UTC.strftime("%Y-%m-%d %H:%M:%S.%f"),
+                "initiator": o.initiator
+            }  
         else:
             return o.__dict__
 
@@ -40,7 +45,7 @@ app.json_encoder = MyJSONEncoder
 @app.route("/people", methods=["GET", "POST"])
 def handle_people():
     if request.method == "GET":
-        #get_people_from_db = MagicMock(return_value=[{"id": 1, "first_name": "Greg", "last_name": "Ford"}])
+        #get_people = MagicMock(return_value=[{"id": 1, "first_name": "Greg", "last_name": "Ford"}])
         return jsonify(get_people())
     elif request.method == "POST":
         posted_json = request.get_json()
@@ -56,7 +61,7 @@ def handle_people():
 @app.route("/drinks", methods=["GET", "POST"])
 def handle_drinks():
     if request.method == "GET":
-        #get_drinks_from_db = MagicMock(return_value=[{"id": 3, "name": "water", "instructions": None}])
+        #get_drinks = MagicMock(return_value=[{"id": 3, "name": "water", "instructions": None}])
         return jsonify(get_drinks())
     elif request.method == "POST":
         posted_json = request.get_json()
@@ -68,19 +73,22 @@ def handle_drinks():
 
 @app.route("/rounds", methods=["GET", "POST"])
 def handle_rounds():
+    dummy_round = Round(1, False, datetime.now(), 1)
+    get_rounds = MagicMock(return_value=[dummy_round])
+
     return jsonify(get_rounds())
     pass
 
 
 @app.route("/rounds/<round_id>")
 def handle_round(round_id):
-    return jsonify(get_round_from_db_by_id(round_id))
+    return jsonify(get_round_by_id(round_id))
 
 
 @app.route("/rounds/orders/<round_id>", methods=["GET", "POST"])
 def handle_round_orders(round_id):
     if request.method == "GET":
-        return jsonify(get_round_orders_from_db(round_id))
+        return jsonify(get_round_orders(round_id))
     else:
         posted_json = request.get_json()
         person_id = posted_json["person"]
