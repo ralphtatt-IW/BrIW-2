@@ -25,6 +25,13 @@ def handle_people():
     if request.method == "GET":
         #get_people_from_db = MagicMock(return_value=[{"id": 1, "first_name": "Greg", "last_name": "Ford"}])
         return jsonify(get_people_from_db())
+    elif request.method == "POST":
+        posted_json = request.get_json()
+        first_name = posted_json["first_name"]
+        last_name = posted_json["last_name"]
+        fav_drink = posted_json["fav_drink"]["id"]
+        insert_person()
+
 
 
 @app.route("/drinks", methods=["GET", "POST"])

@@ -44,7 +44,7 @@ def db_insert_and_return_id(command, parameters):
         con.close()
 
 
-def get_people_from_db():
+def get_people():
     sql = """
     Select  Person_Id, 
             Person_First_Name, 
@@ -68,7 +68,7 @@ def get_people_from_db():
     return people_list
 
 
-def get_drinks_from_db():
+def get_drinks():
     sql = """
     Select Drink_Id, Drink_Name, Drink_Instructions
     From tb_Drinks 
@@ -83,7 +83,7 @@ def get_drinks_from_db():
     return drinks_list
 
 
-def get_rounds_from_db():
+def get_rounds():
     sql = """
     Select  Round_Id, Round_Active, Round_StartTimeUTC, Round_Initiator
     From    tb_Rounds r
@@ -104,7 +104,7 @@ def get_rounds_from_db():
     return round_list
 
 
-def get_round_from_db_by_id(round_id):
+def get_round_by_id(round_id):
     sql = """
     Select  Round_Id, Round_Active, Round_StartTimeUTC, Round_Initiator
     From    tb_Rounds
@@ -124,11 +124,10 @@ def get_round_from_db_by_id(round_id):
             row["Round_Initiator"]
         )
 
-    return round_to_return
-    
+    return round_to_return 
 
 
-def get_round_orders_from_db(round_id):
+def get_round_orders(round_id):
     sql = """
     Select  Person_Id, Person_First_Name, Person_Last_Name, Drink_Id, Drink_Name, Drink_Instructions
     From    tb_Round_Orders ro
@@ -157,12 +156,137 @@ def get_round_orders_from_db(round_id):
 
     return round_orders
 
-def add_order_to_db(round_id, person_id, drink_id):
-        sql_insert_command = """
-        Insert Into tb_Round_Orders (ROrder_Round_Id, ROrder_Person, ROrder_Drink)
-        Values (%s, %s, %s)
-        """
-        parameters = (round_id, person_id, drink_id)
-        db_insert_or_update_record(sql_insert_command, parameters)
+
+def insert_round_order(round_id, person_id, drink_id):
+    sql_insert_command = """
+    Insert Into tb_Round_Orders (ROrder_Round_Id, ROrder_Person, ROrder_Drink)
+    Values (%s, %s, %s)
+    """
+    parameters = (round_id, person_id, drink_id)
+    db_insert_or_update_record(sql_insert_command, parameters)
 
 
+def insert_person(first_name, last_name):
+    sql_insert_command = """
+    Insert Into tb_People (Person_First_Name, Person_Last_Name)
+    Values (%s, %s)
+    """
+
+    parameters = (first_name, last_name)
+    db_insert_or_update_record(sql_insert_command, parameters)
+
+
+def insert_person_drinks_pref(person_id, drink_id):
+    sql_insert_command = """
+    Insert Into tb_Preferences (Pref_Person, Pref_Drink)
+    values (%s, %s)
+    """
+
+    parameters = (person_id, drink_id)
+    db_insert_or_update_record(sql_insert_command, parameters)
+
+
+def insert_drink(name, instructions):
+    sql_insert_command = """
+    Insert Into tb_Drinks (Drink_Name, Drink_Instructions)
+    values (%s, %s)
+    """
+
+    parameters = (name, instructions)
+    db_insert_or_update_record(sql_insert_command, parameters)
+
+
+def insert_round(round_active, round_start_time_utc, round_initiator):
+    sql_save_command  = """
+    insert into tb_Rounds (Round_Active, Round_StartTimeUTC, Round_Initiator)
+    values (%s, %s, %s)
+    """
+    
+    parameters = (round_active, round_start_time_utc, round_initiator)
+    db_insert_or_update_record(sql_save_command, parameters)
+
+
+def update_round_order(order_id, person_id, drink_id):
+    sql_update_command = """
+    update  tb_Round_Orders
+    Set     ROrder_Person = %s,
+            ROrder_Drink = %s
+    Where   ROrder_Id = %s
+    """
+    parameters = (person_id, drink_id, order_id)
+    db_insert_or_update_record(sql_update_command, parameters)
+
+
+def update_person(person_id, first_name, last_name):
+    sql_update_command = """
+    Update  tb_people
+    Set     Person_First_Name = %s,
+            Person_Last_Name = %s
+    From    Person_Id = %s
+    """
+    parameters = (first_name, last_name, person_id)
+    db_insert_or_update_record(sql_update_command, parameters)
+
+
+def update_drink(drink_id, name, instructions):
+    sql_update_command = """
+    Update  tb_Drinks
+    Set     Drink_Name = %s,
+            Drink_Instructions = %s
+    Where   Drink_Id = %s
+    """
+
+    parameters = (name, instructions, drink_id)
+    db_insert_or_update_record(sql_update_command, parameters)
+
+
+def update_round(round_id, round_active, round_start_time_utc, round_initator):
+    sql_update_command = """
+    Update  tb_Rounds
+    Set     Round_Active = %s,
+            Round_StartTimeUTC = %s,
+            Round_Initiator = %s
+    Where   Round_Id = %s
+    """
+    
+    parameters = (round_active, round_start_time_utc, round_initator, round_id)
+    db_insert_or_update_record(sql_update_command, parameters)
+
+
+def delete_round_order(order_id):
+    sql_delete_commmand = """
+    Delete From tb_Round_Orders
+    Where ROrder_Id = %s
+    """
+    parameters = (order_id)
+    db_insert_or_update_record(sql_delete_commmand, parameters)
+
+
+def delete_person(person_id):
+    sql_delete_commmand = """
+    Delete From tb_People
+    Where Person_Id = %s
+    """
+
+    parameters = (person_id)
+    db_insert_or_update_record(sql_delete_commmand, parameters)
+
+
+def delete_drink(drink_id):
+    sql_delete_commmand = """
+    Delete From tb_Drinks
+    Where Drink_Id = %s
+    """
+
+    parameters = (drink_id)
+    db_insert_or_update_record(sql_delete_commmand, parameters)
+
+
+def delete_round(round_id):
+    sql_delete_commmand = """
+    Delete From tb_Rounds
+    Where Round_Id = %s
+    """
+
+    parameters = (round_id)
+    db_insert_or_update_record(sql_delete_commmand, parameters)
