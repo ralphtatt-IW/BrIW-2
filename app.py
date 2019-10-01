@@ -73,8 +73,8 @@ def handle_drinks():
 
 @app.route("/rounds", methods=["GET", "POST"])
 def handle_rounds():
-    dummy_round = Round(1, False, datetime.now(), 1)
-    get_rounds = MagicMock(return_value=[dummy_round])
+    #dummy_round = Round(1, False, datetime.now(), 1)
+    #get_rounds = MagicMock(return_value=[dummy_round])
 
     return jsonify(get_rounds())
     pass
