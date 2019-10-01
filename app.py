@@ -16,7 +16,7 @@ class MyJSONEncoder(JSONEncoder):
         return o.__dict__
 
 
-app = Flask(__name__, static_folder="/templates")
+app = Flask(__name__, static_url_path="/static")
 app.json_encoder = MyJSONEncoder
 
 
