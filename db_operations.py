@@ -49,21 +49,21 @@ def get_person_by_id(person_id):
     Select  Person_Id, Person_First_Name, Person_Last_Name,
             Drink_Id, Drink_Name, Drink_Instructions
     From    tb_People p
-    Join    tb_Preferences pr
+    Left Outer Join    tb_Preferences pr
         On  Person_Id = Pref_Person
-    Join    tb_Drinks d
+    Left Outer Join    tb_Drinks d
         On  Drink_Id = Pref_Drink
     Where   Person_Id = %s
     """
 
     parameters = (person_id)
-    row = db_return_rows(sql, parameters)[0]
-
+    row = db_return_rows(sql_query, parameters)[0]
+    
     return Person(
         row["Person_Id"],
         row["Person_First_Name"],
         row["Person_Last_Name"],
-        Drink(
+        None if row["Drink_Id"] is None else Drink(
             row["Drink_Id"],
             row["Drink_Name"],
             row["Drink_Instructions"]
@@ -79,13 +79,17 @@ def get_drink_by_id(drink_id):
     """
 
     parameters = (drink_id)
-    row = db_return_rows(sql_query, parameters)[0]
+    rows = db_return_rows(sql_query, parameters)
+    if rows is not None:
+        row = rows[0]
 
-    return Drink(
-        row["Drink_Id"],
-        row["Drink_Name"],
-        row["Drink_Instructions"]
-    )
+        return Drink(
+            row["Drink_Id"],
+            row["Drink_Name"],
+            row["Drink_Instructions"]
+        )
+    else:
+        return None
     
 
 def get_round_by_id(round_id):
@@ -119,7 +123,7 @@ def get_round_order_by_id(order_id):
     From    tb_Round_Orders ro
     Join    tb_People p On p.Person_Id = ro.ROrder_Person
     Join    tb_Drinks d On d.Drink_Id = ro.ROrder_Drink
-    Where   ROrder_Round_Id = %s
+    Where   ROrder_Id = %s
     """
     
     parameters = (round_id)
@@ -144,20 +148,17 @@ def get_people():
     sql = """
     Select  Person_Id, 
             Person_First_Name, 
-            Person_Last_Name, 
-            Drink_Id, 
-            Drink_Name, 
-            Drink_Instructions
+            Person_Last_Name,
+            Pref_Drink
     From    tb_People p 
     Left Outer Join tb_Preferences pf on pf.Pref_Person = p.Person_Id 
-    Left Outer Join tb_Drinks d on d.Drink_Id = pf.Pref_Drink 
     Order By Person_Id
     """
     people_db_rows = db_return_rows(sql)
     people_list = []
 
     for row in people_db_rows:
-        fav_drink = Drink(row["Drink_Id"], row["Drink_Name"], row["Drink_Instructions"]) if row["Drink_Id"] is not None else None
+        fav_drink = get_drink_by_id(row["Pref_Drink"])
         person = Person(row["Person_Id"], row["Person_First_Name"], row["Person_Last_Name"], fav_drink)
         people_list.append(person)
 
@@ -202,10 +203,8 @@ def get_rounds():
 
 def get_round_orders(round_id):
     sql = """
-    Select  ROrder_Id, Person_Id, Person_First_Name, Person_Last_Name, Drink_Id, Drink_Name, Drink_Instructions
+    Select  ROrder_Id, ROrder_Person, ROrder_Drink
     From    tb_Round_Orders ro
-    Join    tb_People p on p.Person_Id = ro.ROrder_Person
-    Join    tb_Drinks d on d.Drink_Id = ro.ROrder_Drink
     Where   ROrder_Round_Id = %s
     """
     
@@ -213,17 +212,8 @@ def get_round_orders(round_id):
     round_orders = []
 
     for row in round_orders_db_rows:
-        person = Person(
-            row["Person_Id"],
-            row["Person_First_Name"],
-            row["Person_Last_Name"]
-        )
-
-        drink = Drink(
-            row["Drink_Id"],
-            row["Drink_Name"],
-            row["Drink_Instructions"]
-        )
+        person = get_person_by_id(row["ROrder_Person"]) 
+        drink = get_drink_by_id(row["ROrder_Drink"])
         
         round_orders.append({
             "id": row["ROrder_Id"],
@@ -296,14 +286,23 @@ def update_round_order(order_id, person_id, drink_id):
 
 def update_person(person_id, first_name, last_name):
     sql_update_command = """
-    Update  tb_people
+    Update  tb_People
     Set     Person_First_Name = %s,
             Person_Last_Name = %s
-    From    Person_Id = %s
+    Where   Person_Id = %s
     """
     parameters = (first_name, last_name, person_id)
     db_insert_or_update_record(sql_update_command, parameters)
 
+def update_pref(person_id, drink_id):
+    sql_update_command = """
+    Update  tb_Preferences
+    Set     Pref_Drink = %s
+    Where   Pref_Person = %s
+    """
+
+    parameters = (drink_id, person_id)
+    db_insert_or_update_record(sql_update_command, parameters)
 
 def update_drink(drink_id, name, instructions):
     sql_update_command = """

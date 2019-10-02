@@ -49,10 +49,7 @@ class Person:
         self._last_name = name
    
     def get_fav_drink(self):
-        if self._fav_drink is None:
-            return Drink(-1, "No Preference")
-        else:
-            return self._fav_drink
+        return self._fav_drink
 
     def set_fav_drink(self, drink: Drink):
         self._fav_drink = drink

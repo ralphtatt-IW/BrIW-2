@@ -1,0 +1,58 @@
+{% extends "master.html" %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <table class="center-div table" style="display: flexbox;">
+                    <thead>
+                        <th scope="col">Id</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Instructions</th>
+                    </thead>
+                    <tbody>
+                        {% for drink in drinks %}
+                            <tr>
+                                <th scope="col">{{drink.id}}</th>
+                                <td>{{drink.name}}</td>
+                                {% if drink.Insructions %}
+                                    <td>{{drink.Instructions}}</td>
+                                {% else %}
+                                    <td>None</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-3">
+                <form id="add_person_form" method="post" style="display: flexbox; width: 100%;">
+                    <!-- <div class="center-div" style="display: flexbox; text-align: center;"> -->
+                        <table class="center-div">
+                            <tr>
+                                <td>
+                                    <legend style="text-align: center;">Add New Drink</legend>
+                                </td>
+                            </tr>
+                            <tr>                  
+                                <td>
+                                    <input id="name" type="text" name="name" placeholder="Drink Name" style="width: 100%;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="instructions" type="text" name="instructions" placeholder="Instructions" style="width: 100%;"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                <input id="submit-btn" type="submit" value="Submit" class="btn btn-warning btn-sm" style="align-self: center; margin-top: 10px; width: 100%;">
+                                </td>
+                            </tr>
+                        </table>
+                    <!--</div>-->
+                </form>    
+            </div>
+        </div>
+    </div>
+{% endblock %}

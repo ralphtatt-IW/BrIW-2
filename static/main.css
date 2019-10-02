@@ -1,11 +1,11 @@
-
 .center-div {
     margin: auto;
     vertical-align: middle;
+    display: flexbox;
 }
 
 .center-of-page {
-    display:flex;
+    display:flexbox;
     justify-content:center;
     align-items:center;
 }
