@@ -15,11 +15,7 @@
                             <tr>
                                 <th scope="col">{{drink.id}}</th>
                                 <td>{{drink.name}}</td>
-                                {% if drink.Insructions %}
-                                    <td>{{drink.Instructions}}</td>
-                                {% else %}
-                                    <td>None</td>
-                                {% endif %}
+                                <td>{{drink.Instructions}}</td>                            
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -46,7 +42,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                <input id="submit-btn" type="submit" value="Submit" class="btn btn-warning btn-sm" style="align-self: center; margin-top: 10px; width: 100%;">
+                                <input id="submit_btn" type="submit" value="Submit" class="btn btn-warning btn-sm" style="align-self: center; margin-top: 10px; width: 100%;">
                                 </td>
                             </tr>
                         </table>

@@ -51,9 +51,10 @@ def handle_people():
         posted_json = request.get_json()
         first_name = posted_json["first_name"]
         last_name = posted_json["last_name"]
-
+        
         person_id = insert_person(first_name, last_name)
         if "fav_drink" in posted_json.keys():
+            print(fav_drink)
             insert_person_drinks_pref(person_id, posted_json["fav_drink"]["id"])
         return '', 201
 
@@ -139,6 +140,20 @@ def serve_home():
 @app.route("/people", methods=["GET", "POST"])
 def serve_people_page():
     if request.method == "GET":
+        get_people = MagicMock(return_value=[Person(1, "Greg", "Ford", Drink(3, "Water", None))])
+        get_drinks = MagicMock(return_value=[
+            Drink(1, "Drink 1", None),
+            Drink(2, "Drink 2", None),
+            Drink(3, "Drink 3", None),
+            Drink(4, "Drink 4", None),
+            Drink(5, "Drink 5", None),
+            Drink(6, "Drink 6", None),
+            Drink(7, "Drink 7", None),
+            Drink(8, "Drink 8", None),
+            Drink(9, "Drink 9", None),
+            Drink(10, "Drink 10", None),
+            Drink(11, "Drink 11", None)
+        ])
         return render_template("people.html", title="People", people=get_people(), drinks=get_drinks())
     else:
         person_name = request.form.get("person-name")
@@ -149,6 +164,19 @@ def serve_people_page():
 @app.route("/drinks", methods=["GET", "POST"])
 def serve_drinks_page():
     if request.method == "GET":
+        get_drinks = MagicMock(return_value=[
+            Drink(1, "Drink 1", None),
+            Drink(2, "Drink 2", None),
+            Drink(3, "Drink 3", None),
+            Drink(4, "Drink 4", None),
+            Drink(5, "Drink 5", None),
+            Drink(6, "Drink 6", None),
+            Drink(7, "Drink 7", None),
+            Drink(8, "Drink 8", None),
+            Drink(9, "Drink 9", None),
+            Drink(10, "Drink 10", None),
+            Drink(11, "Drink 11", None)
+        ])
         return render_template("drinks.html", title="Drinks", drinks=get_drinks())
 
 
