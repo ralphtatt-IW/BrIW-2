@@ -6,6 +6,7 @@
             <div class="col">
                 <table class="center-div table" style="display: flexbox;">
                     <thead>
+                        <th scope="col"></th>
                         <th scope="col">#</th>
                         <th scope="col">Initiator</th>
                         <th scope="col">Round Active</th>
@@ -14,7 +15,10 @@
                     <tbody>
                         {% for round in rounds %}
                             <tr>
-                                <th scope="col">#{{round.id}}</th>
+                                <th scope="col">
+                                    <input type="button" value="View" class="btn btn-warning"/>
+                                </th>
+                                <td>#{{round.id}}</th>
                                 <td>{{round.initiator}}</td>
                                 <td>{{round._active}}</td>
                                 <td>{{round.start_time_UTC}}</td>                            
