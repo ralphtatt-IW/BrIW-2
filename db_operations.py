@@ -77,19 +77,21 @@ def get_drink_by_id(drink_id):
     From    tb_Drinks
     Where   Drink_Id = %s
     """
-
-    parameters = (drink_id)
-    rows = db_return_rows(sql_query, parameters)
-    if rows is not None:
-        row = rows[0]
-
-        return Drink(
-            row["Drink_Id"],
-            row["Drink_Name"],
-            row["Drink_Instructions"]
-        )
-    else:
+    if drink_id is None:
         return None
+    else:
+        parameters = (drink_id)
+        rows = db_return_rows(sql_query, parameters)
+        if rows is not None:
+            row = rows[0]
+
+            return Drink(
+                row["Drink_Id"],
+                row["Drink_Name"],
+                row["Drink_Instructions"]
+            )
+        else:
+            return None
     
 
 def get_round_by_id(round_id):
@@ -238,7 +240,7 @@ def insert_person(first_name, last_name):
     Insert Into tb_People (Person_First_Name, Person_Last_Name)
     Values (%s, %s);
     """
-
+    
     parameters = (first_name, last_name)
     return db_insert_and_return_id(sql_insert_command, parameters)
 
@@ -258,7 +260,6 @@ def insert_drink(name, instructions):
     Insert Into tb_Drinks (Drink_Name, Drink_Instructions)
     values (%s, %s)
     """
-
     parameters = (name, instructions)
     return db_insert_and_return_id(sql_insert_command, parameters)
 

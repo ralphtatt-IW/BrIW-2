@@ -13,3 +13,7 @@
 .nav-item a {
     color: white;
 }
+
+.nav-active {
+    color: #f0ad4e !important;
+}

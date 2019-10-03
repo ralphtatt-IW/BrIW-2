@@ -45,7 +45,6 @@ app.json_encoder = MyJSONEncoder
 @app.route("/api/people", methods=["GET", "POST"])
 def handle_people():
     if request.method == "GET":
-        #get_people = MagicMock(return_value=[{"id": 1, "first_name": "Greg", "last_name": "Ford"}])
         return jsonify(get_people())
     elif request.method == "POST":
         posted_json = request.get_json()
@@ -54,8 +53,7 @@ def handle_people():
         
         person_id = insert_person(first_name, last_name)
         if "fav_drink" in posted_json.keys():
-            print(fav_drink)
-            insert_person_drinks_pref(person_id, posted_json["fav_drink"]["id"])
+            insert_person_drinks_pref(person_id, posted_json["fav_drink"])
         return '', 201
 
 
@@ -83,7 +81,6 @@ def handle_person(person_id):
 @app.route("/api/drinks", methods=["GET", "POST"])
 def handle_drinks():
     if request.method == "GET":
-        #get_drinks = MagicMock(return_value=[{"id": 3, "name": "water", "instructions": None}])
         return jsonify(get_drinks())
     elif request.method == "POST":
         posted_json = request.get_json()
@@ -101,8 +98,6 @@ def handle_drink(drink_id):
 
 @app.route("/api/rounds", methods=["GET", "POST"])
 def handle_rounds():
-    #dummy_round = Round(1, False, datetime.now(), 1)
-    #get_rounds = MagicMock(return_value=[dummy_round])
     if request.method == "GET":
         return jsonify(get_rounds())
     elif request.method == "POST":
@@ -139,46 +134,18 @@ def serve_home():
 
 @app.route("/people", methods=["GET", "POST"])
 def serve_people_page():
-    if request.method == "GET":
-        get_people = MagicMock(return_value=[Person(1, "Greg", "Ford", Drink(3, "Water", None))])
-        get_drinks = MagicMock(return_value=[
-            Drink(1, "Drink 1", None),
-            Drink(2, "Drink 2", None),
-            Drink(3, "Drink 3", None),
-            Drink(4, "Drink 4", None),
-            Drink(5, "Drink 5", None),
-            Drink(6, "Drink 6", None),
-            Drink(7, "Drink 7", None),
-            Drink(8, "Drink 8", None),
-            Drink(9, "Drink 9", None),
-            Drink(10, "Drink 10", None),
-            Drink(11, "Drink 11", None)
-        ])
-        return render_template("people.html", title="People", people=get_people(), drinks=get_drinks())
-    else:
-        person_name = request.form.get("person-name")
-        drink_name = request.form.get("drink-name")
-        
-        return render_template("people.html", title="People", person_name=person_name, drink_name=drink_name)
+    return render_template("people.html", title="People", people=get_people(), drinks=get_drinks())
+
 
 @app.route("/drinks", methods=["GET", "POST"])
 def serve_drinks_page():
-    if request.method == "GET":
-        get_drinks = MagicMock(return_value=[
-            Drink(1, "Drink 1", None),
-            Drink(2, "Drink 2", None),
-            Drink(3, "Drink 3", None),
-            Drink(4, "Drink 4", None),
-            Drink(5, "Drink 5", None),
-            Drink(6, "Drink 6", None),
-            Drink(7, "Drink 7", None),
-            Drink(8, "Drink 8", None),
-            Drink(9, "Drink 9", None),
-            Drink(10, "Drink 10", None),
-            Drink(11, "Drink 11", None)
-        ])
-        return render_template("drinks.html", title="Drinks", drinks=get_drinks())
+    return render_template("drinks.html", title="Drinks", drinks=get_drinks())
+
+
+@app.route("/rounds", methods=["GET", "POST"])
+def serve_rounds_page():
+    return render_template("rounds.html", title="Rounds", rounds=get_rounds())
 
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=8000, debug=True)
+    app.run(host="0.0.0.0", port=8000, debug=True)
