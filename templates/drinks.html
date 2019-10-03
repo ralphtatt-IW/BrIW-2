@@ -6,14 +6,14 @@
             <div class="col">
                 <table class="center-div table" style="display: flexbox;">
                     <thead>
-                        <th scope="col">Id</th>
+                        <th scope="col">#</th>
                         <th scope="col">Name</th>
                         <th scope="col">Instructions</th>
                     </thead>
                     <tbody>
                         {% for drink in drinks %}
                             <tr>
-                                <th scope="col">{{drink.id}}</th>
+                                <th scope="col">#{{drink.id}}</th>
                                 <td>{{drink.name}}</td>
                                 <td>{{drink.instructions}}</td>                            
                             </tr>

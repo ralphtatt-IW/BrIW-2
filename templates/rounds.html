@@ -6,16 +6,18 @@
             <div class="col">
                 <table class="center-div table" style="display: flexbox;">
                     <thead>
-                        <th scope="col">Id</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Instructions</th>
+                        <th scope="col">#</th>
+                        <th scope="col">Initiator</th>
+                        <th scope="col">Round Active</th>
+                        <th scope="col">Start/Submit Time</th>
                     </thead>
                     <tbody>
-                        {% for drink in drinks %}
+                        {% for round in rounds %}
                             <tr>
-                                <th scope="col">{{drink.id}}</th>
-                                <td>{{drink.name}}</td>
-                                <td>{{drink.instructions}}</td>                            
+                                <th scope="col">#{{round.id}}</th>
+                                <td>{{round.initiator}}</td>
+                                <td>{{round._active}}</td>
+                                <td>{{round.start_time_UTC}}</td>                            
                             </tr>
                         {% endfor %}
                     </tbody>

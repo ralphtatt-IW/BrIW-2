@@ -6,14 +6,14 @@
             <div class="col">
                 <table class="center-div table" style="display: flexbox;">
                     <thead>
-                        <th scope="col">Id</th>
+                        <th scope="col">#</th>
                         <th scope="col">Name</th>
                         <th scope="col">Favourite Drink</th>
                     </thead>
                     <tbody>
                         {% for person in people %}
                             <tr>
-                                <th scope="col">{{person.id}}</th>
+                                <th scope="col">#{{person.id}}</th>
                                 <td>{{person.full_name}}</td>
                                 {% if person.fav_drink %}
                                     <td>{{person.fav_drink.name}}</td>
