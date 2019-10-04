@@ -9,7 +9,7 @@ BrIW is a flask web app for creating brew rounds between teams. It includes
 * [Pytest](https://docs.pytest.org/en/latest/)
 * [Flask](https://www.fullstackpython.com/flask.html)
 
-## Set Up**
+## Set Up
 
 A custom virtual environement for the project is recommended
 
