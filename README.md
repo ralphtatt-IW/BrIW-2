@@ -16,6 +16,6 @@ A custom virtual environement for the project is recommended
 All dependencies can be installed with:
 `pip3 install -r requirement.txt`
 
-**Contributing**
+### Contributing
 To contribute to BrIW, fork the repo make your changes and make a pull request that will be reviewed
 
